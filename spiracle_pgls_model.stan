@@ -13,10 +13,10 @@ data {
 }
 
 parameters {
-  real<lower=0> a;
+  real a;
   real b;
-  //real<lower=0, upper=1> lambda;
-  //real<lower=0> sigma;
+  real<lower=0, upper=1> lambda;
+  real<lower=0> sigma;
 }
 
 transformed parameters {
@@ -30,20 +30,21 @@ transformed parameters {
   for (i in 1:N) {
     for (j in 1:N) {
       if (! i == j)
-        cov[i, j] = cov_phylo[i,j];//*lambda*sigma;
+        cov[i, j] = cov_phylo[i,j]*lambda;//*sigma;
       else
-        cov[i, j] = cov_phylo[i,j];//*sigma;
+        cov[i, j] = cov_phylo[i,j]*sigma;
     }
   }
   
 }
 
 model {
-  a ~ normal(0.66, 0.4);
+  a ~ normal(0.33, 0.3);
   b ~ normal(-1.0, 1.0);
-  //lambda ~ beta(1.1, 1.1);
-  //sigma ~ normal(0.0, 1.0);
+  //lambda ~ beta(10.0, 0.5);
   
+  sigma ~ normal(0.0, 1.0);
+  lambda ~ beta(1.4, 1.4);
   y ~ multi_normal(mu, cov);
   
 }
