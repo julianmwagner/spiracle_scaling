@@ -7,7 +7,7 @@ import scipy.stats
 import bokeh.io
 import bokeh.plotting
 
-def plot_regression_comparison(df, df_averages, x, spir, morphs, samples, slope_comp, x_ppc, circle_size=7, circle_alpha=0.3, line_width=3, line_alpha=1, size=300):
+def plot_regression_comparison(df, df_averages, x, spir, morphs, samples, slope_comp, x_ppc, circle_size=7, circle_alpha=0.3, line_width=3, line_alpha=1, size=300, around_line=0.4):
 
     y_min, y_max = np.min(df[morphs].values), np.max(df[morphs].values)
     x_min, x_max = np.min(df['log mass (g)'].values), np.max(df['log mass (g)'].values)
@@ -19,9 +19,13 @@ def plot_regression_comparison(df, df_averages, x, spir, morphs, samples, slope_
                           x_range=(x_min-0.2, x_max+0.2)#, y_axis_label=morphs, x_axis_label='log mass',
                          )
     
-    [p.line(generate_line(intercept=i, slope=slope_comp, point=x_max)[0],
-            generate_line(intercept=i, slope=slope_comp, point=x_max)[1], color='grey', alpha=0.3)
-     for i in line_scale*np.array(range(30))+intercept1]
+    for i in line_scale*np.array(range(30))+intercept1:
+            try:
+                p.line(generate_line(intercept=i, slope=slope_comp, bounds=(x_min-around_line, x_max+around_line, y_min-around_line, y_max+around_line), point=x_max)[0],
+                       generate_line(intercept=i, slope=slope_comp, bounds=(x_min-around_line, x_max+around_line, y_min-around_line, y_max+around_line), point=x_max)[1],
+                    color='grey', alpha=0.3)
+            except:
+                pass
 
     #p.legend.location = 'bottom_right'
     p.xgrid.visible = False
@@ -138,17 +142,18 @@ def make_CIs(df, to_plot, spiracle, q=[2.5, 97.5]):
         
     return(np.percentile(bs_slope_reps, q), np.percentile(bs_intercept_reps, q), np.percentile(bs_σ_reps, q), slope, intercept, σ)
 
-def generate_line(slope, intercept, point=0, move=100):
-    x1 = point-move
-    x2 = point+move
-    y1 = slope*x1 + intercept
-    y2 = slope*x2 + intercept
-    return (x1, x2), (y1, y2)
+def generate_line(slope, intercept, bounds, point=0, move=100, N=1000):
+    x = np.linspace(point-move, point+move, N)
+    y = slope*x + intercept
+    boolean = (x > bounds[0]) & (y > bounds[2]) & (x < bounds[1]) & (y < bounds[3])
+    x_bounds = x[boolean]
+    y_bounds = y[boolean]
+    return (x_bounds[0], x_bounds[-1]), (y_bounds[0], y_bounds[-1])
 
 def first_intercept(slope, x_max, y_min):
     return(y_min-slope*x_max)
 
-def make_plot(df, to_plot, slope_comp, n_cols=4):
+def make_plot(df, to_plot, slope_comp, n_cols=4, around_line=0.4):
     
     def draw_bs_pairs_linreg(x, y, size=1):
         """Perform pairs bootstrap for linear regression."""
@@ -180,9 +185,13 @@ def make_plot(df, to_plot, slope_comp, n_cols=4):
                                   y_range=(y_min-0.2, y_max+0.2),
                                   x_range=(x_min-0.2, x_max+0.2)
                                  )
-        [p.line(generate_line(intercept=i, slope=slope_comp, point=x_max)[0],
-                generate_line(intercept=i, slope=slope_comp, point=x_max)[1], color='grey', alpha=0.3)
-         for i in line_scale*np.array(range(30))+intercept1]
+        for i in line_scale*np.array(range(30))+intercept1:
+            try:
+                p.line(generate_line(intercept=i, slope=slope_comp, bounds=(x_min-around_line, x_max+around_line, y_min-around_line, y_max+around_line), point=x_max)[0],
+                       generate_line(intercept=i, slope=slope_comp, bounds=(x_min-around_line, x_max+around_line, y_min-around_line, y_max+around_line), point=x_max)[1],
+                    color='grey', alpha=0.3)
+            except:
+                pass
 
         p.scatter('log mass (g)', to_plot,
                   source = df.loc[(df['spiracle'] == spiracle)])
@@ -223,3 +232,4 @@ def make_plot(df, to_plot, slope_comp, n_cols=4):
         
 
     bokeh.io.show(bokeh.layouts.gridplot(plots,ncols=n_cols))
+    return(plots)
