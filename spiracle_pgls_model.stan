@@ -31,7 +31,7 @@ transformed parameters {
   for (i in 1:N) {
     for (j in 1:N) {
       if (! i == j)
-        cov[i, j] = cov_phylo[i,j]*lambda;//*sigma;
+        cov[i, j] = cov_phylo[i,j]*lambda*sigma;
       else
         cov[i, j] = cov_phylo[i,j]*sigma;
     }
@@ -53,6 +53,7 @@ model {
 generated quantities {
   vector[N] y_ppc;
   vector[N] mu_ppc;
+  real coef_var = (sigma)/(10^b);
 
   for (i in 1:N) {
     mu_ppc[i] = f(x[i], a, b);

@@ -9,6 +9,7 @@ data {
   int<lower=1> N;
   vector[N] x;
   vector[N] y;
+  real priora;
   matrix[N, N] cov_phylo;
 }
 
@@ -30,7 +31,7 @@ transformed parameters {
   for (i in 1:N) {
     for (j in 1:N) {
       if (! i == j)
-        cov[i, j] = cov_phylo[i,j]*lambda;//*sigma;
+        cov[i, j] = cov_phylo[i,j]*lambda*sigma;
       else
         cov[i, j] = cov_phylo[i,j]*sigma;
     }
@@ -39,8 +40,8 @@ transformed parameters {
 }
 
 model {
-  a ~ normal(0.33, 0.3);
-  b ~ normal(-1.0, 1.0);
+  a ~ normal(priora, 0.3);
+  b ~ normal(-1.0, 2.0);
   //lambda ~ beta(10.0, 0.5);
   
   sigma ~ normal(0.0, 1.0);
@@ -52,6 +53,7 @@ model {
 generated quantities {
   vector[N] y_ppc;
   vector[N] mu_ppc;
+  real coef_var = (sigma)/(10^b);
 
   for (i in 1:N) {
     mu_ppc[i] = f(x[i], a, b);
