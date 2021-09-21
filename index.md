@@ -5,7 +5,7 @@
 layout: home
 ---
 
-# Isometric Spiracular Scaling in Scarab Beetles: Implications for Diffusive and Advective Oxygen Transport
+**Isometric Spiracular Scaling in Scarab Beetles: Implications for Diffusive and Advective Oxygen Transport**
 
 <p align="center">
   <img width="600" src="./beetle_reconstruction.jpg">
