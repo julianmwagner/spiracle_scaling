@@ -1,0 +1,37 @@
+\documentclass{article}
+\usepackage[utf8]{inputenc}
+\usepackage{array}
+\usepackage{wrapfig}
+\usepackage{multirow}
+\usepackage{tabularx}
+\usepackage[margin=0.5in]{geometry}
+\title{Tables}
+
+
+
+\begin{document}
+
+
+\begin{table}[h!]
+\centering
+ \begin{tabular}{c c c c} 
+ Regression \mathrm{vs}\,\log(\mathrm{mass}) & slope^{97.5\%}_{2.5\%} & intercept^{97.5\%}_{2.5\%} & converted intercept^{97.5\%}_{2.5\%}\\ [0.5ex] 
+ \hline
+\hline
+\\[-8]
+ log(G_{\mathrm{diff}})\, & 0.394_{0.232}^{0.504} & 1.368_{1.266}^{1.498} & 23.334_{18.450}^{31.477} \, \frac{\mathrm{nmol}}{\mathrm{sec}*\mathrm{kPa}}\\
+ \\[-8]
+ log(G_{\mathrm{adv}})\, &  1.119_{0.845}^{1.356} & -3.048_{-3.232}^{-2.851} & 0.000895_{0.000586}^{0.00141} \, \frac{\mathrm{cm^3}}{\mathrm{sec}*\mathrm{kPa}}\\
+ \\[-8]
+ log\left(\Delta{\mathrm{PO}_2} (\mathrm{resting, MR \sim mass^{0.75}})\right)\, & 0.356_{0.245}^{0.518} & -0.873_{-1.002}^{-0.771} & 0.134_{0.0995}^{0.169} \, \mathrm{kPa}\\
+  \\[-8]
+ log\left(\Delta{\mathrm{PO}_2} (\mathrm{flight, MR \sim mass^{0.67}})\right)\, &  0.276_{0.165}^{0.443} & 1.081_{0.947}^{1.184} & 12.050_{8.851}^{15.276} \, \mathrm{kPa}\\
+  \\[-8]
+ log\left(\Delta{\mathrm{PO}_2} (\mathrm{flight, MR \sim mass^{1.19}})\right)\, &  0.796_{0.686}^{0.964} & 1.081_{0.947}^{1.183} & 12.050_{8.851}^{15.241} \, \mathrm{kPa}\\ [1ex]
+ \end{tabular}
+ \caption{Regression coefficients from equations in figure 3}
+ \label{table:1}
+\end{table}
+
+
+\end{document}
